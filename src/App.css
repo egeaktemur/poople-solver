@@ -87,3 +87,194 @@
   text-transform: uppercase;
   color: rgba(239, 236, 230, 0.12);
 }
+
+/* ── Graph ── */
+.graph-container {
+  width: 100%;
+  height: 62vh;
+  min-height: 500px;
+  position: relative;
+}
+
+.graph-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.graph-loading-cursor {
+  font-family: 'DM Mono', monospace;
+  font-size: 2rem;
+  color: var(--accent-neon);
+  animation: blink 0.8s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* ── Path Tab ── */
+.path-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.path-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.path-input-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.word-input {
+  font-family: 'DM Mono', monospace;
+  font-size: 1.5rem;
+  font-weight: 400;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  background: transparent;
+  border: none;
+  border-bottom: 1.5px solid rgba(239, 236, 230, 0.18);
+  padding: 6px 0;
+  width: 8ch;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.word-input:focus {
+  border-bottom-color: var(--accent-neon);
+}
+
+.word-input::placeholder {
+  color: rgba(239, 236, 230, 0.1);
+}
+
+.find-btn {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--bg-color);
+  background: var(--accent-neon);
+  border: none;
+  padding: 11px 22px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.find-btn:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+.find-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.random-btn {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(239, 236, 230, 0.55);
+  background: transparent;
+  border: 1px solid rgba(239, 236, 230, 0.14);
+  padding: 11px 22px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+  will-change: transform;
+}
+
+.random-btn:hover {
+  border-color: rgba(239, 236, 230, 0.4);
+  color: var(--text-primary);
+}
+
+.random-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.error-msg {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent-poop);
+}
+
+/* ── Graph Wrapper & Path Overlay ── */
+.graph-wrapper {
+  position: relative;
+}
+
+.path-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 56px 32px 28px;
+  background: linear-gradient(
+    to top,
+    rgba(20, 18, 19, 0.95) 0%,
+    rgba(20, 18, 19, 0.55) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+.path-sequence {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.path-token {
+  display: inline-flex;
+  align-items: center;
+}
+
+.path-word {
+  font-family: 'DM Mono', monospace;
+  font-size: 1.125rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: var(--accent-neon);
+}
+
+.path-word--poop {
+  color: var(--accent-poop);
+  animation: poop-pulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes poop-pulse {
+  0%   { text-shadow: 0 0 10px rgba(255, 0, 127, 0.4); }
+  100% { text-shadow: 0 0 26px rgba(255, 0, 127, 0.85), 0 0 52px rgba(255, 0, 127, 0.25); }
+}
+
+.path-arrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.8125rem;
+  color: rgba(239, 236, 230, 0.2);
+  margin: 0 10px;
+}
+
+.path-meta {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.5625rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(239, 236, 230, 0.22);
+  margin-top: 12px;
+}

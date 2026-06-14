@@ -27,6 +27,7 @@ export interface WordGraphResult {
   isLoading: boolean
   findPath: (word: string) => void
   clearPath: () => void
+  pathResultKey: number
 }
 
 export function useWordGraph(): WordGraphResult {
@@ -34,6 +35,7 @@ export function useWordGraph(): WordGraphResult {
   const [links, setLinks] = useState<GraphLink[]>([])
   const [activePath, setActivePath] = useState<string[] | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [pathResultKey, setPathResultKey] = useState(0)
   const workerRef = useRef<Worker | null>(null)
 
   useEffect(() => {
@@ -48,6 +50,7 @@ export function useWordGraph(): WordGraphResult {
         setIsLoading(false)
       } else if (msg.type === 'PATH_RESULT') {
         setActivePath(msg.path)
+        setPathResultKey(k => k + 1)
       }
     }
 
@@ -75,5 +78,5 @@ export function useWordGraph(): WordGraphResult {
     setActivePath(null)
   }, [])
 
-  return { nodes, links, activePath, isLoading, findPath, clearPath }
+  return { nodes, links, activePath, isLoading, findPath, clearPath, pathResultKey }
 }
