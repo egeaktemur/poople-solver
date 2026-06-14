@@ -63,7 +63,7 @@
 
 .tab-btn {
   font-family: 'DM Mono', monospace;
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: rgba(239, 236, 230, 0.3);
@@ -101,7 +101,7 @@
 
 .placeholder-label {
   font-family: 'DM Mono', monospace;
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   letter-spacing: 0.35em;
   text-transform: uppercase;
   color: rgba(239, 236, 230, 0.12);
@@ -181,7 +181,7 @@
 
 .find-btn {
   font-family: 'DM Mono', monospace;
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--bg-color);
@@ -203,7 +203,7 @@
 
 .random-btn {
   font-family: 'DM Mono', monospace;
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: rgba(239, 236, 230, 0.55);
@@ -227,7 +227,7 @@
 
 .error-msg {
   font-family: 'DM Mono', monospace;
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--accent-poop);
@@ -291,7 +291,7 @@
 
 .path-meta {
   font-family: 'DM Mono', monospace;
-  font-size: 0.5625rem;
+  font-size: 0.75rem;
   letter-spacing: 0.25em;
   text-transform: uppercase;
   color: rgba(239, 236, 230, 0.22);
@@ -323,7 +323,7 @@
 
 .hover-card-divider {
   font-family: 'DM Mono', monospace;
-  font-size: 0.4375rem;
+  font-size: 0.75rem;
   letter-spacing: 0.32em;
   text-transform: uppercase;
   color: var(--accent-neon);
@@ -344,12 +344,12 @@
   align-items: baseline;
   gap: 6px;
   font-family: 'DM Mono', monospace;
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
 }
 
 .hover-card-rank {
   color: rgba(239, 236, 230, 0.2);
-  font-size: 0.5625rem;
+  font-size: 0.75rem;
   width: 20px;
   flex-shrink: 0;
 }
@@ -363,12 +363,12 @@
 .hover-card-degree {
   color: var(--accent-neon);
   opacity: 0.65;
-  font-size: 0.5625rem;
+  font-size: 0.75rem;
 }
 
 .hover-card-more {
   font-family: 'DM Mono', monospace;
-  font-size: 0.5rem;
+  font-size: 0.75rem;
   letter-spacing: 0.12em;
   color: rgba(239, 236, 230, 0.25);
   margin-top: 4px;
@@ -376,8 +376,8 @@
 
 /* ── Analyze Tab ── */
 .analyze-tab {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 2px;
   padding-bottom: 60px;
 }
@@ -393,7 +393,7 @@
 
 .analyze-loading-label {
   font-family: 'DM Mono', monospace;
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: rgba(239, 236, 230, 0.2);
@@ -407,13 +407,10 @@
   gap: 14px;
 }
 
-.analyze-section--wide {
-  grid-column: 1 / -1;
-}
 
 .analyze-section-tag {
   font-family: 'DM Mono', monospace;
-  font-size: 0.5rem;
+  font-size: 1.0rem;
   letter-spacing: 0.32em;
   text-transform: uppercase;
   color: rgba(239, 236, 230, 0.22);
@@ -434,10 +431,9 @@
 
 .analyze-section-sub {
   font-family: 'DM Mono', monospace;
-  font-size: 0.6875rem;
+  font-size: 0.9rem;
   line-height: 1.65;
-  color: rgba(239, 236, 230, 0.3);
-  max-width: 48ch;
+  color: rgba(239, 236, 230, 0.5);
 }
 
 /* Socialites */
@@ -456,8 +452,8 @@
 
 .socialite-rank {
   font-family: 'DM Mono', monospace;
-  font-size: 0.5625rem;
-  color: rgba(239, 236, 230, 0.18);
+  font-size: 0.75rem;
+  color: rgba(239, 236, 230, 0.38);
   letter-spacing: 0.1em;
   width: 18px;
   flex-shrink: 0;
@@ -490,22 +486,22 @@
 
 .hermit-word {
   font-family: 'DM Mono', monospace;
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   letter-spacing: 0.06em;
 }
 
 .hermit-word--0 {
-  color: rgba(239, 236, 230, 0.1);
+  color: rgba(239, 236, 230, 0.32);
 }
 
 .hermit-word--1 {
-  color: rgba(239, 236, 230, 0.22);
+  color: rgba(239, 236, 230, 0.48);
 }
 
 .hermit-more {
   font-family: 'DM Mono', monospace;
-  font-size: 0.5rem;
-  color: rgba(239, 236, 230, 0.12);
+  font-size: 0.75rem;
+  color: rgba(239, 236, 230, 0.35);
   align-self: center;
 }
 
@@ -535,10 +531,10 @@
 
 .horizon-stat-label {
   font-family: 'DM Mono', monospace;
-  font-size: 0.5rem;
+  font-size: 0.75rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: rgba(239, 236, 230, 0.22);
+  color: rgba(239, 236, 230, 0.45);
 }
 
 .horizon-farthest {
@@ -551,10 +547,10 @@
 
 .horizon-farthest-label {
   font-family: 'DM Mono', monospace;
-  font-size: 0.5rem;
+  font-size: 0.75rem;
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  color: rgba(239, 236, 230, 0.22);
+  color: rgba(239, 236, 230, 0.45);
   flex-shrink: 0;
 }
 
@@ -584,14 +580,14 @@
 }
 
 .ap-degree {
-  font-size: 0.5rem;
+  font-size: 0.75rem;
   opacity: 0.45;
 }
 
 .ap-more {
   font-family: 'DM Mono', monospace;
-  font-size: 0.5rem;
-  color: rgba(255, 0, 127, 0.3);
+  font-size: 0.75rem;
+  color: rgba(255, 0, 127, 0.55);
   align-self: center;
 }
 
@@ -614,10 +610,10 @@
 
 .palindrome-count-label {
   font-family: 'DM Mono', monospace;
-  font-size: 0.5rem;
+  font-size: 0.75rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: rgba(239, 236, 230, 0.22);
+  color: rgba(239, 236, 230, 0.45);
 }
 
 .palindrome-grid {
@@ -629,7 +625,7 @@
 
 .palindrome-word {
   font-family: 'DM Mono', monospace;
-  font-size: 0.8125rem;
+  font-size: 1.0rem;
   letter-spacing: 0.06em;
   color: rgba(239, 236, 230, 0.4);
   display: inline-flex;
@@ -649,7 +645,7 @@
 }
 
 .palindrome-half--right {
-  color: rgba(239, 236, 230, 0.18);
+  color: rgba(239, 236, 230, 0.35);
 }
 
 .palindrome-word--poop .palindrome-half--right {
@@ -657,7 +653,7 @@
 }
 
 .palindrome-sep {
-  font-size: 0.45rem;
+  font-size: 0.75rem;
   color: rgba(239, 236, 230, 0.1);
   padding: 0 1px;
 }
@@ -694,8 +690,8 @@
 
 .anagram-cluster-count {
   font-family: 'DM Mono', monospace;
-  font-size: 0.5625rem;
-  color: rgba(239, 236, 230, 0.18);
+  font-size: 0.75rem;
+  color: rgba(239, 236, 230, 0.4);
   letter-spacing: 0.06em;
   flex-shrink: 0;
   width: 20px;
@@ -718,7 +714,7 @@
 .anagram-sep {
   font-family: 'DM Mono', monospace;
   font-size: 0.75rem;
-  color: rgba(239, 236, 230, 0.14);
+  color: rgba(239, 236, 230, 0.28);
 }
 
 /* ── Archipelago (07) ── */
@@ -737,9 +733,9 @@
 
 .archipelago-row-rank {
   font-family: 'DM Mono', monospace;
-  font-size: 0.5rem;
+  font-size: 0.75rem;
   letter-spacing: 0.1em;
-  color: rgba(239, 236, 230, 0.18);
+  color: rgba(239, 236, 230, 0.38);
   flex-shrink: 0;
   width: 28px;
 }
@@ -763,10 +759,10 @@
 
 .archipelago-row-label {
   font-family: 'DM Mono', monospace;
-  font-size: 0.5625rem;
+  font-size: 0.75rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(239, 236, 230, 0.2);
+  color: rgba(239, 236, 230, 0.42);
 }
 
 .archipelago-row--main .archipelago-row-label {
@@ -822,8 +818,8 @@
 
 .thoroughfare-rank {
   font-family: 'DM Mono', monospace;
-  font-size: 0.5625rem;
-  color: rgba(239, 236, 230, 0.16);
+  font-size: 0.75rem;
+  color: rgba(239, 236, 230, 0.38);
   letter-spacing: 0.08em;
 }
 
@@ -850,8 +846,8 @@
 
 .thoroughfare-score {
   font-family: 'DM Mono', monospace;
-  font-size: 0.5625rem;
-  color: rgba(239, 236, 230, 0.28);
+  font-size: 0.75rem;
+  color: rgba(239, 236, 230, 0.5);
   text-align: right;
   letter-spacing: 0.04em;
 }
@@ -870,9 +866,9 @@
 
 .gravity-label {
   font-family: 'DM Mono', monospace;
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   letter-spacing: 0.15em;
-  color: rgba(239, 236, 230, 0.28);
+  color: rgba(239, 236, 230, 0.55);
 }
 
 .gravity-value {
@@ -887,10 +883,10 @@
 
 .gravity-unit {
   font-family: 'DM Mono', monospace;
-  font-size: 0.5625rem;
+  font-size: 0.75rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(255, 0, 127, 0.38);
+  color: rgba(255, 0, 127, 0.65);
 }
 
 .gravity-breakdown {
@@ -898,7 +894,7 @@
   flex-direction: column;
   gap: 4px;
   font-family: 'DM Mono', monospace;
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
 }
 
 .gravity-breakdown-header {
@@ -907,10 +903,10 @@
   gap: 12px;
   padding-bottom: 8px;
   border-bottom: 1px solid rgba(239, 236, 230, 0.06);
-  font-size: 0.4375rem;
+  font-size: 0.75rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(239, 236, 230, 0.16);
+  color: rgba(239, 236, 230, 0.45);
 }
 
 .gravity-breakdown-row {
@@ -921,7 +917,7 @@
 }
 
 .gravity-bd-dist {
-  color: rgba(239, 236, 230, 0.32);
+  color: rgba(239, 236, 230, 0.5);
   letter-spacing: 0.06em;
 }
 
@@ -943,9 +939,9 @@
 
 .gravity-footnote {
   font-family: 'DM Mono', monospace;
-  font-size: 0.5rem;
+  font-size: 0.75rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(239, 236, 230, 0.13);
+  color: rgba(239, 236, 230, 0.38);
   margin-top: 8px;
 }
