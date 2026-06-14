@@ -7,8 +7,8 @@ export interface GraphNode {
   y?: number
   vx?: number
   vy?: number
-  fx?: number | null
-  fy?: number | null
+  fx?: number
+  fy?: number
 }
 
 export interface GraphLink {
@@ -16,9 +16,22 @@ export interface GraphLink {
   target: string | GraphNode
 }
 
+export type AnalyticsData = {
+  socialites: { word: string; degree: number }[]
+  hermits: { word: string; degree: number }[]
+  poopHorizon: {
+    avgDistance: number
+    maxDistance: number
+    farthestWords: string[]
+    unreachableCount: number
+  }
+  articulationPoints: { word: string; degree: number }[]
+}
+
 type WorkerOutMsg =
   | { type: 'GRAPH_READY'; nodes: { id: string }[]; links: { source: string; target: string }[] }
   | { type: 'PATH_RESULT'; path: string[] | null }
+  | { type: 'ANALYTICS_RESULT'; data: AnalyticsData }
 
 export interface WordGraphResult {
   nodes: GraphNode[]
@@ -28,6 +41,9 @@ export interface WordGraphResult {
   findPath: (word: string) => void
   clearPath: () => void
   pathResultKey: number
+  analytics: AnalyticsData | null
+  isAnalyticsLoading: boolean
+  computeAnalytics: () => void
 }
 
 export function useWordGraph(): WordGraphResult {
@@ -36,6 +52,8 @@ export function useWordGraph(): WordGraphResult {
   const [activePath, setActivePath] = useState<string[] | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [pathResultKey, setPathResultKey] = useState(0)
+  const [analytics, setAnalytics] = useState<AnalyticsData | null>(null)
+  const [isAnalyticsLoading, setIsAnalyticsLoading] = useState(false)
   const workerRef = useRef<Worker | null>(null)
 
   useEffect(() => {
@@ -51,6 +69,9 @@ export function useWordGraph(): WordGraphResult {
       } else if (msg.type === 'PATH_RESULT') {
         setActivePath(msg.path)
         setPathResultKey(k => k + 1)
+      } else if (msg.type === 'ANALYTICS_RESULT') {
+        setAnalytics(msg.data)
+        setIsAnalyticsLoading(false)
       }
     }
 
@@ -78,5 +99,21 @@ export function useWordGraph(): WordGraphResult {
     setActivePath(null)
   }, [])
 
-  return { nodes, links, activePath, isLoading, findPath, clearPath, pathResultKey }
+  const computeAnalytics = useCallback(() => {
+    setIsAnalyticsLoading(true)
+    workerRef.current?.postMessage({ type: 'COMPUTE_ANALYTICS' })
+  }, [])
+
+  return {
+    nodes,
+    links,
+    activePath,
+    isLoading,
+    findPath,
+    clearPath,
+    pathResultKey,
+    analytics,
+    isAnalyticsLoading,
+    computeAnalytics,
+  }
 }

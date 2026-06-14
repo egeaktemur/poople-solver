@@ -14,6 +14,33 @@ The full network of ~2,250 four-letter words is rendered as a live force-directe
 
 ---
 
+## Features
+
+### Word Network tab
+
+Live force-directed graph of all ~2,250 four-letter words. Hovering over any node triggers the **Lexical Orbit** panel:
+
+- The hovered word is highlighted in bone white with a glow.
+- All immediate neighbours are highlighted in dim chartreuse, connected to the hovered node via glowing edges.
+- A floating editorial card lists the neighbours ranked by their own connectivity (degree).
+
+### The Path tab
+
+Enter any 4-letter word and find the shortest path to POOP via BFS. The path is animated on the graph and displayed as a word chain below it.
+
+### Analyze tab
+
+A deep statistical dashboard computed in the Web Worker on first visit:
+
+| Section | What it shows |
+|---|---|
+| **Socialites** | Top 5 words by number of valid 1-letter mutations (highest degree) |
+| **Hermits** | Words with zero or one connection — the lexical loners |
+| **POOP Horizon** | Average / maximum / unreachable counts from BFS out of POOP |
+| **Critical Vulnerabilities** | Articulation points — words whose removal would shatter the graph into disconnected islands |
+
+---
+
 ## How the graph is built
 
 ### Word list
@@ -38,12 +65,24 @@ Finding the shortest path to POOP is a classic unweighted shortest-path problem,
 - Each state in the queue carries the full path taken so far, so the result is returned directly without backtracking.
 - If no path exists (some words are in isolated components of the graph), `null` is returned.
 
+### Analytics (computed lazily in the Worker)
+
+When the Analyze tab is first opened, the worker receives `COMPUTE_ANALYTICS` and runs four calculations:
+
+- **Socialites** — sort all words by `adjacency.get(word).length` descending, take top 5.
+- **Hermits** — filter for degree ≤ 1.
+- **POOP Horizon** — single BFS *from* POOP to all reachable words; computes average/max distance and lists unreachable words.
+- **Articulation Points** — iterative Tarjan's algorithm (DFS-based, O(V+E)) finds all words whose removal disconnects the graph. Returned sorted by degree descending.
+
 ### Web Worker
 
-Both the adjacency list construction and BFS run entirely inside a **Web Worker**, keeping the main thread free. The UI never blocks while the graph is being built or while a path search is in progress. The worker communicates with the main thread via two message types:
+All heavy computation (graph build, BFS, analytics) runs inside a **Web Worker**, keeping the main thread free. The worker handles three message types:
 
-- `GRAPH_READY` — sent once after `INIT`, carries all nodes and deduplicated edges.
-- `PATH_RESULT` — sent in response to `FIND_PATH`, carries the path array or `null`.
+| Message (in) | Response (out) | When |
+|---|---|---|
+| `INIT` | `GRAPH_READY` | On app load — sends nodes + deduplicated edges |
+| `FIND_PATH` | `PATH_RESULT` | On path search — sends path array or `null` |
+| `COMPUTE_ANALYTICS` | `ANALYTICS_RESULT` | On first Analyze tab open |
 
 ---
 
@@ -55,17 +94,19 @@ Canvas rendering is mandatory here. DOM-based graph libraries (e.g. those that c
 
 ### Custom canvas drawing
 
-The library exposes `nodeCanvasObject` and `linkCanvasObject` callbacks that receive the raw `CanvasRenderingContext2D`. POODLE uses these to draw three distinct node states:
+The library exposes `nodeCanvasObject` and `linkCanvasObject` callbacks that receive the raw `CanvasRenderingContext2D`. POODLE uses these to draw five distinct node states:
 
 | Node state | Radius | Colour |
 |---|---|---|
-| Default | 2 / zoom | `#4A4446` |
+| Default | 2 / zoom | `#4A4446` (dimmed when hover or path active) |
 | On shortest path | 5 / zoom | `#D6FF00` |
+| Hover neighbour | 3.5 / zoom | `rgba(214,255,0,0.65)` |
+| Hovered | 6 / zoom | `#EFECE6` (bone white) |
 | POOP | 8 / zoom | `#FF007F` |
 
 Dividing by `globalScale` (the current zoom level) keeps nodes and edge widths visually consistent regardless of how far the user has zoomed in or out.
 
-Path edges are drawn with a custom `linkCanvasObject` that adds a coloured stroke with `shadowBlur` for the glow effect. `linkCanvasObjectMode` returns `"replace"` only for path edges so the library's default renderer handles the other ~20,000 edges efficiently.
+`linkCanvasObjectMode` returns `"replace"` for both path edges and hover edges, so the library's default renderer handles the other ~20,000 edges efficiently. The single `linkCanvasObject` callback then distinguishes path edges (bright chartreuse, width 2) from hover edges (dim chartreuse, width 1) via `pathEdgeSet`.
 
 ---
 
@@ -80,6 +121,7 @@ Path edges are drawn with a custom `linkCanvasObject` that adds a coloured strok
 | Animation | Framer Motion |
 | Graph computation | Web Worker |
 | Shortest path | Breadth-First Search |
+| Analytics | BFS (POOP Horizon) + iterative Tarjan's AP algorithm |
 | Deployment | GitHub Pages |
 
 ---

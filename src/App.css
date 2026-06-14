@@ -278,3 +278,300 @@
   color: rgba(239, 236, 230, 0.22);
   margin-top: 12px;
 }
+
+/* ── Hover Card ── */
+.hover-card {
+  position: fixed;
+  background: rgba(20, 18, 19, 0.9);
+  border: 1px solid var(--accent-neon);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 12px 16px;
+  width: 220px;
+  pointer-events: none;
+  z-index: 100;
+}
+
+.hover-card-header {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.625rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.hover-card-divider {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.4375rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--accent-neon);
+  opacity: 0.55;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(214, 255, 0, 0.12);
+  margin-bottom: 8px;
+}
+
+.hover-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hover-card-item {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6875rem;
+}
+
+.hover-card-rank {
+  color: rgba(239, 236, 230, 0.2);
+  font-size: 0.5625rem;
+  width: 20px;
+  flex-shrink: 0;
+}
+
+.hover-card-neighbor {
+  color: var(--text-primary);
+  flex: 1;
+  letter-spacing: 0.04em;
+}
+
+.hover-card-degree {
+  color: var(--accent-neon);
+  opacity: 0.65;
+  font-size: 0.5625rem;
+}
+
+.hover-card-more {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.12em;
+  color: rgba(239, 236, 230, 0.25);
+  margin-top: 4px;
+}
+
+/* ── Analyze Tab ── */
+.analyze-tab {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  padding-bottom: 60px;
+}
+
+.analyze-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 62vh;
+  gap: 20px;
+}
+
+.analyze-loading-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(239, 236, 230, 0.2);
+}
+
+.analyze-section {
+  border: 1px solid rgba(239, 236, 230, 0.06);
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.analyze-section--wide {
+  grid-column: 1 / -1;
+}
+
+.analyze-section-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(239, 236, 230, 0.22);
+}
+
+.analyze-section-heading {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--text-primary);
+}
+
+.analyze-section-heading--magenta {
+  color: var(--accent-poop);
+}
+
+.analyze-section-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6875rem;
+  line-height: 1.65;
+  color: rgba(239, 236, 230, 0.3);
+  max-width: 48ch;
+}
+
+/* Socialites */
+.socialite-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.socialite-row {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+
+.socialite-rank {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.5625rem;
+  color: rgba(239, 236, 230, 0.18);
+  letter-spacing: 0.1em;
+  width: 18px;
+  flex-shrink: 0;
+}
+
+.socialite-word {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.1rem, 2vw, 1.625rem);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.socialite-degree {
+  font-family: 'DM Mono', monospace;
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-weight: 400;
+  color: var(--accent-neon);
+  text-shadow: 0 0 24px rgba(214, 255, 0, 0.35);
+}
+
+/* Hermits */
+.hermit-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin-top: 4px;
+}
+
+.hermit-word {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+}
+
+.hermit-word--0 {
+  color: rgba(239, 236, 230, 0.1);
+}
+
+.hermit-word--1 {
+  color: rgba(239, 236, 230, 0.22);
+}
+
+.hermit-more {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.5rem;
+  color: rgba(239, 236, 230, 0.12);
+  align-self: center;
+}
+
+/* POOP Horizon */
+.horizon-stats {
+  display: flex;
+  gap: 48px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.horizon-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.horizon-stat-num {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--accent-neon);
+  text-shadow: 0 0 32px rgba(214, 255, 0, 0.25);
+}
+
+.horizon-stat-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(239, 236, 230, 0.22);
+}
+
+.horizon-farthest {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.horizon-farthest-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(239, 236, 230, 0.22);
+  flex-shrink: 0;
+}
+
+.horizon-farthest-words {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  color: rgba(239, 236, 230, 0.55);
+}
+
+/* Articulation Points */
+.ap-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin-top: 4px;
+}
+
+.ap-word {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: var(--accent-poop);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 3px;
+}
+
+.ap-degree {
+  font-size: 0.5rem;
+  opacity: 0.45;
+}
+
+.ap-more {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.5rem;
+  color: rgba(255, 0, 127, 0.3);
+  align-self: center;
+}

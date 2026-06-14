@@ -2,9 +2,12 @@ import { useState, useEffect, useRef, useMemo } from 'react'
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion'
 import './App.css'
 import { useWordGraph } from './useWordGraph'
+import type { GraphNode } from './useWordGraph'
 import { WordGraph } from './WordGraph'
+import { HoverCard } from './HoverCard'
+import { AnalyzeTab } from './AnalyzeTab'
 
-type Tab = 'network' | 'path'
+type Tab = 'network' | 'path' | 'analyze'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -59,13 +62,72 @@ function MagneticButton({
 
 function App() {
   const [activeTab, setActiveTab] = useState<Tab>('network')
-  const { nodes, links, activePath, isLoading, findPath, clearPath, pathResultKey } =
-    useWordGraph()
+  const {
+    nodes,
+    links,
+    activePath,
+    isLoading,
+    findPath,
+    clearPath,
+    pathResultKey,
+    analytics,
+    isAnalyticsLoading,
+    computeAnalytics,
+  } = useWordGraph()
   const [pathWord, setPathWord] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [isSearching, setIsSearching] = useState(false)
 
+  // Hover card state
+  const [hoveredWord, setHoveredWord] = useState<string | null>(null)
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
+
   const wordSet = useMemo(() => new Set(nodes.map(n => n.id)), [nodes])
+
+  // Build adjacency map from the initial string-keyed links (set once when GRAPH_READY fires)
+  const nodeNeighbors = useMemo(() => {
+    const map = new Map<string, string[]>()
+    for (const link of links) {
+      const s =
+        typeof link.source === 'object'
+          ? (link.source as GraphNode).id!
+          : (link.source as string)
+      const t =
+        typeof link.target === 'object'
+          ? (link.target as GraphNode).id!
+          : (link.target as string)
+      if (!map.has(s)) map.set(s, [])
+      if (!map.has(t)) map.set(t, [])
+      map.get(s)!.push(t)
+      map.get(t)!.push(s)
+    }
+    return map
+  }, [links])
+
+  // Neighbor info for the hovered word (for HoverCard)
+  const hoveredNeighbors = useMemo(() => {
+    if (!hoveredWord) return []
+    return (nodeNeighbors.get(hoveredWord) ?? []).map(w => ({
+      word: w,
+      degree: nodeNeighbors.get(w)?.length ?? 0,
+    }))
+  }, [hoveredWord, nodeNeighbors])
+
+  // Neighbor set passed to WordGraph for canvas highlighting
+  const hoverNeighborSet = useMemo(() => {
+    if (!hoveredWord) return new Set<string>()
+    return new Set(nodeNeighbors.get(hoveredWord) ?? [])
+  }, [hoveredWord, nodeNeighbors])
+
+  // Edge set for the hover edges (used by linkCanvasObjectMode in WordGraph)
+  const hoverEdgeSet = useMemo(() => {
+    if (!hoveredWord) return new Set<string>()
+    const s = new Set<string>()
+    for (const n of nodeNeighbors.get(hoveredWord) ?? []) {
+      s.add(hoveredWord < n ? `${hoveredWord}|${n}` : `${n}|${hoveredWord}`)
+    }
+    return s
+  }, [hoveredWord, nodeNeighbors])
 
   // Keep a ref to activePath so the pathResultKey effect reads the current value
   // without needing activePath in its dependency array
@@ -79,6 +141,27 @@ function App() {
       setError('No path to POOP found.')
     }
   }, [pathResultKey])
+
+  // Trigger analytics computation the first time the Analyze tab is opened (after graph loads)
+  const analyticsRequestedRef = useRef(false)
+  useEffect(() => {
+    if (activeTab === 'analyze' && !isLoading && !analyticsRequestedRef.current) {
+      analyticsRequestedRef.current = true
+      computeAnalytics()
+    }
+  }, [activeTab, isLoading, computeAnalytics])
+
+  // Clear hover state when switching tabs so the card doesn't linger
+  useEffect(() => {
+    setHoveredWord(null)
+  }, [activeTab])
+
+  // Global mouse tracking for the hover card
+  useEffect(() => {
+    const onMove = (e: MouseEvent) => setMousePos({ x: e.clientX, y: e.clientY })
+    window.addEventListener('mousemove', onMove)
+    return () => window.removeEventListener('mousemove', onMove)
+  }, [])
 
   const startSearch = (word: string) => {
     const upper = word.trim().toUpperCase()
@@ -116,6 +199,14 @@ function App() {
       <div className="ambient-bg" />
       <div className="noise-overlay" />
 
+      {/* Hover card — rendered outside the graph so it's never clipped */}
+      <HoverCard
+        word={hoveredWord}
+        neighbors={hoveredNeighbors}
+        x={mousePos.x}
+        y={mousePos.y}
+      />
+
       <div className="app-layout">
         <motion.header
           className="site-header"
@@ -149,6 +240,12 @@ function App() {
           >
             The Path
           </button>
+          <button
+            className={`tab-btn${activeTab === 'analyze' ? ' active' : ''}`}
+            onClick={() => setActiveTab('analyze')}
+          >
+            Analyze
+          </button>
         </motion.nav>
 
         <motion.main
@@ -159,8 +256,17 @@ function App() {
           transition={{ duration: 0.6, ease: 'easeOut', delay: 0.3 }}
         >
           {activeTab === 'network' ? (
-            <WordGraph nodes={nodes} links={links} activePath={null} isLoading={isLoading} />
-          ) : (
+            <WordGraph
+              nodes={nodes}
+              links={links}
+              activePath={null}
+              isLoading={isLoading}
+              onNodeHover={setHoveredWord}
+              hoveredWord={hoveredWord}
+              hoverNeighborSet={hoverNeighborSet}
+              hoverEdgeSet={hoverEdgeSet}
+            />
+          ) : activeTab === 'path' ? (
             <div className="path-tab">
               <div className="path-controls">
                 <div className="path-input-row">
@@ -214,6 +320,10 @@ function App() {
                   links={links}
                   activePath={activePath}
                   isLoading={isLoading}
+                  onNodeHover={setHoveredWord}
+                  hoveredWord={hoveredWord}
+                  hoverNeighborSet={hoverNeighborSet}
+                  hoverEdgeSet={hoverEdgeSet}
                 />
 
                 <AnimatePresence>
@@ -262,6 +372,12 @@ function App() {
                 </AnimatePresence>
               </div>
             </div>
+          ) : (
+            <AnalyzeTab
+              analytics={analytics}
+              isLoading={isLoading || isAnalyticsLoading}
+              onWordHover={setHoveredWord}
+            />
           )}
         </motion.main>
       </div>

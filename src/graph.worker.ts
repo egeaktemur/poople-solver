@@ -8,10 +8,24 @@ const ctx = self as unknown as WorkerCtx
 type WorkerInMsg =
   | { type: 'INIT'; words: string[] }
   | { type: 'FIND_PATH'; from: string }
+  | { type: 'COMPUTE_ANALYTICS' }
+
+export type AnalyticsData = {
+  socialites: { word: string; degree: number }[]
+  hermits: { word: string; degree: number }[]
+  poopHorizon: {
+    avgDistance: number
+    maxDistance: number
+    farthestWords: string[]
+    unreachableCount: number
+  }
+  articulationPoints: { word: string; degree: number }[]
+}
 
 type WorkerOutMsg =
   | { type: 'GRAPH_READY'; nodes: { id: string }[]; links: { source: string; target: string }[] }
   | { type: 'PATH_RESULT'; path: string[] | null }
+  | { type: 'ANALYTICS_RESULT'; data: AnalyticsData }
 
 let adjacency = new Map<string, string[]>()
 let wordSet = new Set<string>()
@@ -60,6 +74,147 @@ function bfs(start: string): string[] | null {
   return null
 }
 
+function computeSocialites(): AnalyticsData['socialites'] {
+  return [...adjacency.entries()]
+    .map(([word, neighbors]) => ({ word, degree: neighbors.length }))
+    .sort((a, b) => b.degree - a.degree)
+    .slice(0, 5)
+}
+
+function computeHermits(): AnalyticsData['hermits'] {
+  return [...adjacency.entries()]
+    .filter(([, neighbors]) => neighbors.length <= 1)
+    .map(([word, neighbors]) => ({ word, degree: neighbors.length }))
+    .sort((a, b) => a.degree - b.degree)
+}
+
+function computePoopHorizon(): AnalyticsData['poopHorizon'] {
+  if (!wordSet.has('POOP')) {
+    return { avgDistance: 0, maxDistance: 0, farthestWords: [], unreachableCount: wordSet.size }
+  }
+
+  // Single BFS from POOP outward reaches all connected words in O(V+E)
+  const distances = new Map<string, number>([['POOP', 0]])
+  const queue: string[] = ['POOP']
+
+  while (queue.length > 0) {
+    const word = queue.shift()!
+    const dist = distances.get(word)!
+    for (const neighbor of adjacency.get(word) ?? []) {
+      if (!distances.has(neighbor)) {
+        distances.set(neighbor, dist + 1)
+        queue.push(neighbor)
+      }
+    }
+  }
+
+  let total = 0
+  let maxDist = 0
+  const farthestWords: string[] = []
+  let unreachableCount = 0
+
+  for (const word of wordSet) {
+    if (word === 'POOP') continue
+    if (!distances.has(word)) {
+      unreachableCount++
+      continue
+    }
+    const d = distances.get(word)!
+    total += d
+    if (d > maxDist) {
+      maxDist = d
+      farthestWords.length = 0
+      farthestWords.push(word)
+    } else if (d === maxDist) {
+      farthestWords.push(word)
+    }
+  }
+
+  const reachableCount = distances.size - 1 // exclude POOP itself
+  const avgDistance = reachableCount > 0 ? total / reachableCount : 0
+
+  return { avgDistance, maxDistance: maxDist, farthestWords, unreachableCount }
+}
+
+// Standard iterative Tarjan's bridge/AP algorithm — avoids call-stack overflow on large components
+function computeArticulationPoints(): AnalyticsData['articulationPoints'] {
+  const disc = new Map<string, number>()
+  const low = new Map<string, number>()
+  const parent = new Map<string, string | null>()
+  const childCount = new Map<string, number>()
+  const ap = new Set<string>()
+  let timer = 0
+
+  // Iterative DFS using an explicit stack of [vertex, neighborIndex] pairs
+  for (const root of wordSet) {
+    if (disc.has(root)) continue
+
+    parent.set(root, null)
+    childCount.set(root, 0)
+    const stack: [string, number][] = [[root, 0]]
+    disc.set(root, timer)
+    low.set(root, timer)
+    timer++
+
+    while (stack.length > 0) {
+      const frame = stack[stack.length - 1]
+      const u = frame[0]
+      const neighbors = adjacency.get(u) ?? []
+
+      if (frame[1] < neighbors.length) {
+        const v = neighbors[frame[1]++]
+
+        if (!disc.has(v)) {
+          parent.set(v, u)
+          childCount.set(v, 0)
+          disc.set(v, timer)
+          low.set(v, timer)
+          timer++
+          // Increment parent's child count when we first discover v from u
+          if (parent.get(u) === null) {
+            childCount.set(u, (childCount.get(u) ?? 0) + 1)
+          }
+          stack.push([v, 0])
+        } else if (v !== parent.get(u)) {
+          // Back edge: update low[u]
+          low.set(u, Math.min(low.get(u)!, disc.get(v)!))
+        }
+      } else {
+        // Done with u — pop and propagate low values upward
+        stack.pop()
+        if (stack.length > 0) {
+          const p = stack[stack.length - 1][0]
+          low.set(p, Math.min(low.get(p)!, low.get(u)!))
+
+          const par = parent.get(p) ?? null
+          // AP condition for non-root: low[u] >= disc[p]
+          if (par !== null && low.get(u)! >= disc.get(p)!) {
+            ap.add(p)
+          }
+        }
+      }
+    }
+
+    // Root is an AP if it has more than one DFS child
+    if ((childCount.get(root) ?? 0) > 1) {
+      ap.add(root)
+    }
+  }
+
+  return [...ap]
+    .map(word => ({ word, degree: adjacency.get(word)?.length ?? 0 }))
+    .sort((a, b) => b.degree - a.degree)
+}
+
+function computeAnalytics(): AnalyticsData {
+  return {
+    socialites: computeSocialites(),
+    hermits: computeHermits(),
+    poopHorizon: computePoopHorizon(),
+    articulationPoints: computeArticulationPoints(),
+  }
+}
+
 ctx.onmessage = (e: MessageEvent) => {
   const msg = e.data as WorkerInMsg
 
@@ -86,6 +241,10 @@ ctx.onmessage = (e: MessageEvent) => {
   } else if (msg.type === 'FIND_PATH') {
     const path = bfs(msg.from)
     const response: WorkerOutMsg = { type: 'PATH_RESULT', path }
+    ctx.postMessage(response)
+  } else if (msg.type === 'COMPUTE_ANALYTICS') {
+    const data = computeAnalytics()
+    const response: WorkerOutMsg = { type: 'ANALYTICS_RESULT', data }
     ctx.postMessage(response)
   }
 }
