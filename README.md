@@ -2,9 +2,9 @@
 
 **The Lexical Path to POOP.**
 
-Navigate from any valid 4-letter word to **POOP** by changing exactly one letter at a time — every intermediate word must also be a valid dictionary word.
+Navigate from any valid 4-letter word to **POOP** by changing exactly one letter at a time. Every intermediate word must also be a valid dictionary word.
 
-Built with an Editorial Cyber-Brutalism aesthetic: a high-end fashion magazine crossed with a hacker terminal.
+Navigate from any 4-letter word to POOP. Displaying the network of 4 letter words, finds the shortest path.
 
 ---
 

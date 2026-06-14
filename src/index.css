@@ -31,6 +31,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+code, pre, .mono {
+  font-family: 'DM Mono', monospace;
+}
+
 /* ── Animated Ambient Light ── */
 .ambient-bg {
   position: fixed;
